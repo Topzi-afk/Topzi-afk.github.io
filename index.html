@@ -1,71 +1,2062 @@
-html
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Topzi Services</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            margin: 0;
-            background: #111;
-            color: white;
-            font-family: Arial;
-            text-align: center;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SteamBoost KZ — Накрутка часов Steam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
-        h1 {
-            padding: 20px;
-            background: #000;
-            color: orange;
-        }
+<style>
+  :root {
+    --bg-deep: #020408;
+    --bg-card: #060d18;
+    --bg-glass: rgba(6, 20, 40, 0.75);
+    --neon-blue: #00c6ff;
+    --neon-cyan: #0ff;
+    --neon-green: #39ff14;
+    --neon-purple: #bf5fff;
+    --neon-gold: #ffd700;
+    --accent: #1b9cfc;
+    --accent2: #00e5ff;
+    --steam-blue: #1b2838;
+    --text-primary: #e8f4fd;
+    --text-secondary: #7baabf;
+    --text-dim: #3a5a70;
+    --border: rgba(0, 198, 255, 0.15);
+    --border-glow: rgba(0, 198, 255, 0.5);
+    --radius: 12px;
+    --glow-sm: 0 0 8px rgba(0,198,255,0.4);
+    --glow-md: 0 0 20px rgba(0,198,255,0.3), 0 0 60px rgba(0,198,255,0.1);
+    --glow-lg: 0 0 40px rgba(0,198,255,0.4), 0 0 100px rgba(0,198,255,0.15);
+  }
 
-        .card {
-            background: #222;
-            margin: 20px auto;
-            padding: 20px;
-            width: 90%;
-            max-width: 400px;
-            border-radius: 15px;
-            box-shadow: 0 0 15px rgba(255,140,0,0.4);
-            transition: 0.3s;
-        }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .card:hover {
-            transform: scale(1.05);
-        }
+  html { scroll-behavior: smooth; }
 
-        .price {
-            color: orange;
-            font-size: 22px;
-            font-weight: bold;
-        }
+  body {
+    font-family: 'Exo 2', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-        .btn {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 10px 20px;
-            background: orange;
-            color: black;
-            text-decoration: none;
-            border-radius: 10px;
-        }
-    </style>
+  /* ─── CANVAS BACKGROUND ─── */
+  #bg-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ─── GRID OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,198,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,198,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+  /* ─── NAVBAR ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: rgba(2, 4, 8, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .nav-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    color: var(--neon-blue);
+    text-shadow: var(--glow-sm);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .nav-logo span { color: var(--neon-green); }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    box-shadow: 0 0 15px rgba(0,198,255,0.5);
+  }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.3s, text-shadow 0.3s;
+  }
+  .nav-links a:hover { color: var(--neon-blue); text-shadow: var(--glow-sm); }
+  .nav-cta {
+    background: linear-gradient(90deg, #0072ff, #00c6ff);
+    color: white !important;
+    padding: 8px 22px;
+    border-radius: 6px;
+    font-weight: 600 !important;
+    box-shadow: 0 0 20px rgba(0,114,255,0.4);
+    transition: box-shadow 0.3s, transform 0.2s !important;
+  }
+  .nav-cta:hover {
+    box-shadow: 0 0 35px rgba(0,198,255,0.7) !important;
+    transform: translateY(-1px);
+    color: white !important;
+    text-shadow: none !important;
+  }
+  .burger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 4px;
+  }
+  .burger span {
+    display: block;
+    width: 26px; height: 2px;
+    background: var(--neon-blue);
+    border-radius: 2px;
+    transition: 0.3s;
+  }
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 70px; left: 0; right: 0;
+    background: rgba(2,4,8,0.97);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px;
+    z-index: 999;
+    backdrop-filter: blur(20px);
+  }
+  .mobile-menu.open { display: block; }
+  .mobile-menu a {
+    display: block;
+    padding: 14px 0;
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .mobile-menu a:hover { color: var(--neon-blue); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 70px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(0,114,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    animation: pulse-glow 4s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+  }
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    width: 100%;
+    padding: 60px 20px;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,198,255,0.08);
+    border: 1px solid rgba(0,198,255,0.25);
+    border-radius: 100px;
+    padding: 6px 18px;
+    font-size: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--neon-blue);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    animation: fadeInDown 0.8s ease both;
+  }
+  .badge-dot {
+    width: 8px; height: 8px;
+    background: var(--neon-green);
+    border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+    box-shadow: 0 0 8px var(--neon-green);
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  @keyframes fadeInDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:none} }
+  @keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:none} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+  .hero-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(2.2rem, 7vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 16px;
+    animation: fadeInDown 0.9s 0.1s ease both;
+  }
+  .hero-title .line1 { color: var(--text-primary); }
+  .hero-title .line2 {
+    background: linear-gradient(90deg, #00c6ff, #0ff, #39ff14);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+  }
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+    font-weight: 300;
+    animation: fadeInDown 1s 0.2s ease both;
+  }
+  .hero-price-highlight {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    background: linear-gradient(135deg, rgba(0,198,255,0.08), rgba(57,255,20,0.05));
+    border: 1px solid rgba(0,198,255,0.2);
+    border-radius: 16px;
+    padding: 20px 40px;
+    margin-bottom: 48px;
+    animation: fadeInUp 1s 0.3s ease both;
+  }
+  .price-from {
+    text-align: center;
+  }
+  .price-from .amount {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--neon-green);
+    text-shadow: 0 0 20px rgba(57,255,20,0.5);
+    line-height: 1;
+  }
+  .price-from .label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .price-sep {
+    width: 1px; height: 50px;
+    background: var(--border);
+  }
+  .price-hours {
+    text-align: center;
+  }
+  .price-hours .amount {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--neon-blue);
+    text-shadow: var(--glow-sm);
+    line-height: 1;
+  }
+  .price-hours .label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .hero-btns {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeInUp 1s 0.4s ease both;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(90deg, #0072ff, #00c6ff);
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 16px 36px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 30px rgba(0,114,255,0.5), 0 4px 20px rgba(0,0,0,0.4);
+    transition: box-shadow 0.3s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+  }
+  .btn-primary:hover::after { transform: translateX(100%); }
+  .btn-primary:hover {
+    box-shadow: 0 0 50px rgba(0,198,255,0.7), 0 4px 30px rgba(0,0,0,0.5);
+    transform: translateY(-2px);
+  }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    color: var(--neon-blue);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 15px 36px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px solid rgba(0,198,255,0.4);
+    cursor: pointer;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+  }
+  .btn-secondary:hover {
+    background: rgba(0,198,255,0.08);
+    border-color: var(--neon-blue);
+    box-shadow: var(--glow-md);
+    transform: translateY(-2px);
+  }
+
+  /* ─── STATS BAR ─── */
+  .stats-bar {
+    position: relative;
+    z-index: 1;
+    padding: 0 20px;
+    margin-top: -10px;
+    margin-bottom: 80px;
+  }
+  .stats-inner {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .stat-item {
+    background: var(--bg-card);
+    padding: 28px 24px;
+    text-align: center;
+    transition: background 0.3s;
+  }
+  .stat-item:hover { background: rgba(0,198,255,0.04); }
+  .stat-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--neon-blue);
+    text-shadow: var(--glow-sm);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ─── SECTIONS ─── */
+  section { position: relative; z-index: 1; padding: 90px 0; }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--neon-blue);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    opacity: 0.7;
+  }
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    font-weight: 800;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+  .section-title .highlight {
+    background: linear-gradient(90deg, #00c6ff, #0ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .section-desc {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 560px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+  .section-header { margin-bottom: 60px; }
+  .section-header.centered { text-align: center; }
+  .section-header.centered .section-desc { margin: 0 auto; }
+
+  /* ─── HOW IT WORKS ─── */
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    position: relative;
+  }
+  .step-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 36px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+    cursor: default;
+  }
+  .step-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #0072ff, #00c6ff);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .step-card:hover::before { opacity: 1; }
+  .step-card:hover {
+    border-color: var(--border-glow);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 30px rgba(0,198,255,0.1);
+  }
+  .step-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: rgba(0,198,255,0.1);
+    line-height: 1;
+    margin-bottom: 16px;
+    position: absolute;
+    top: 16px; right: 20px;
+  }
+  .step-icon {
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, rgba(0,114,255,0.2), rgba(0,198,255,0.1));
+    border: 1px solid rgba(0,198,255,0.25);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    box-shadow: 0 0 20px rgba(0,114,255,0.15);
+  }
+  .step-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+  .step-desc {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ─── PRICING ─── */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .plan-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    display: flex;
+    flex-direction: column;
+  }
+  .plan-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .plan-card:hover::after { opacity: 1; }
+  .plan-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 40px rgba(0,114,255,0.12);
+    border-color: rgba(0,198,255,0.3);
+  }
+  .plan-card.featured {
+    background: linear-gradient(160deg, #050f22, #061529);
+    border-color: rgba(0,198,255,0.35);
+    box-shadow: 0 0 40px rgba(0,114,255,0.15);
+  }
+  .plan-card.featured:hover {
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 60px rgba(0,198,255,0.25);
+  }
+  .plan-card.premium {
+    background: linear-gradient(160deg, #0a0818, #110826);
+    border-color: rgba(191,95,255,0.3);
+  }
+  .plan-card.premium:hover {
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 40px rgba(191,95,255,0.15);
+    border-color: rgba(191,95,255,0.5);
+  }
+  .plan-badge {
+    position: absolute;
+    top: -1px; right: 24px;
+    background: linear-gradient(90deg, #0072ff, #00c6ff);
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 20px rgba(0,114,255,0.5);
+  }
+  .plan-badge.premium-badge {
+    background: linear-gradient(90deg, #7b2ff7, #bf5fff);
+    box-shadow: 0 4px 20px rgba(191,95,255,0.5);
+  }
+  .plan-tier {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .plan-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+  }
+  .plan-name.featured-name { color: var(--neon-blue); text-shadow: var(--glow-sm); }
+  .plan-name.premium-name { color: var(--neon-purple); text-shadow: 0 0 15px rgba(191,95,255,0.5); }
+  .plan-price-block {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .plan-price {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .plan-price strong {
+    font-size: 2rem;
+    color: var(--neon-green);
+    text-shadow: 0 0 15px rgba(57,255,20,0.4);
+  }
+  .plan-price-2 { color: var(--text-dim); font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; }
+
+  .plan-features {
+    list-style: none;
+    margin-bottom: 32px;
+    flex: 1;
+  }
+  .plan-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 0;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    line-height: 1.4;
+  }
+  .plan-features li:last-child { border-bottom: none; }
+  .feat-icon {
+    flex-shrink: 0;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    margin-top: 1px;
+  }
+  .feat-icon.yes { background: rgba(57,255,20,0.15); color: var(--neon-green); }
+  .feat-icon.meh { background: rgba(0,198,255,0.12); color: var(--neon-blue); }
+  .feat-icon.no { background: rgba(255,255,255,0.05); color: var(--text-dim); }
+  .plan-btn {
+    display: block;
+    text-align: center;
+    padding: 14px;
+    border-radius: 8px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s;
+  }
+  .plan-btn.basic {
+    background: rgba(0,198,255,0.08);
+    color: var(--neon-blue);
+    border: 1px solid rgba(0,198,255,0.25);
+  }
+  .plan-btn.basic:hover {
+    background: rgba(0,198,255,0.15);
+    border-color: var(--neon-blue);
+    box-shadow: var(--glow-md);
+  }
+  .plan-btn.standard {
+    background: linear-gradient(90deg, #0072ff, #00c6ff);
+    color: white;
+    box-shadow: 0 0 25px rgba(0,114,255,0.4);
+  }
+  .plan-btn.standard:hover {
+    box-shadow: 0 0 45px rgba(0,198,255,0.6);
+    transform: translateY(-2px);
+  }
+  .plan-btn.premium-btn {
+    background: linear-gradient(90deg, #7b2ff7, #bf5fff);
+    color: white;
+    box-shadow: 0 0 25px rgba(191,95,255,0.35);
+  }
+  .plan-btn.premium-btn:hover {
+    box-shadow: 0 0 45px rgba(191,95,255,0.55);
+    transform: translateY(-2px);
+  }
+
+  /* ─── FEATURES SECTION ─── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .feat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 24px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(0,198,255,0.04) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .feat-card:hover::before { opacity: 1; }
+  .feat-card:hover {
+    border-color: rgba(0,198,255,0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  }
+  .feat-card-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, rgba(0,114,255,0.15), rgba(0,198,255,0.08));
+    border: 1px solid rgba(0,198,255,0.15);
+  }
+  .feat-card-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+  .feat-card-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  /* ─── PAYMENT SECTION ─── */
+  .payment-section {
+    background: linear-gradient(180deg, transparent, rgba(0,114,255,0.03), transparent);
+  }
+  .payment-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .payment-category {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    transition: border-color 0.3s;
+  }
+  .payment-category:hover { border-color: rgba(0,198,255,0.25); }
+  .pay-cat-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pay-cat-icon { font-size: 1.1rem; }
+  .payment-methods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .pay-method {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    transition: all 0.25s;
+    font-weight: 500;
+  }
+  .pay-method:hover {
+    background: rgba(0,198,255,0.07);
+    border-color: rgba(0,198,255,0.25);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+  }
+  .pay-method-emoji { font-size: 1.1rem; }
+  .pay-full-row {
+    grid-column: 1 / -1;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+  }
+
+  /* ─── IMAGE PLACEHOLDER ─── */
+  .img-placeholder {
+    width: 100%;
+    height: 240px;
+    background: linear-gradient(135deg, rgba(0,114,255,0.06), rgba(0,198,255,0.03));
+    border: 1px dashed rgba(0,198,255,0.2);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+  }
+  .img-placeholder .ph-icon { font-size: 2.5rem; opacity: 0.4; }
+  .img-placeholder-sm { height: 160px; }
+
+  /* ─── SHOWCASE ─── */
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: center;
+  }
+  .showcase-content { }
+  .showcase-list {
+    list-style: none;
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .showcase-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: border-color 0.3s;
+  }
+  .showcase-list li:hover { border-color: rgba(0,198,255,0.25); }
+  .showcase-list .check {
+    width: 22px; height: 22px;
+    background: rgba(57,255,20,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--neon-green);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+    box-shadow: 0 0 10px rgba(57,255,20,0.2);
+  }
+  .showcase-list .li-text strong {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: 3px;
+    font-weight: 600;
+  }
+  .showcase-list .li-text span {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+
+  /* ─── TERMINAL BLOCK ─── */
+  .terminal {
+    background: #030810;
+    border: 1px solid rgba(0,198,255,0.2);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,114,255,0.08);
+  }
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(0,198,255,0.04);
+    border-bottom: 1px solid rgba(0,198,255,0.1);
+  }
+  .t-btn { width: 12px; height: 12px; border-radius: 50%; }
+  .t-btn.red { background: #ff5f57; }
+  .t-btn.yellow { background: #febc2e; }
+  .t-btn.green { background: #28c840; }
+  .t-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-left: 8px;
+  }
+  .terminal-body {
+    padding: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 2;
+  }
+  .t-line { display: flex; gap: 10px; }
+  .t-prompt { color: var(--neon-green); flex-shrink: 0; }
+  .t-cmd { color: var(--neon-blue); }
+  .t-out { color: var(--text-secondary); padding-left: 20px; }
+  .t-out.success { color: var(--neon-green); }
+  .t-out.warning { color: #ffae00; }
+  .t-cursor {
+    display: inline-block;
+    width: 8px; height: 1.1em;
+    background: var(--neon-blue);
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
+  }
+
+  /* ─── FAQ ─── */
+  .faq-list {
+    max-width: 780px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .faq-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .faq-item:hover { border-color: rgba(0,198,255,0.25); }
+  .faq-q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    cursor: pointer;
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    user-select: none;
+    gap: 16px;
+  }
+  .faq-arrow {
+    width: 24px; height: 24px;
+    border: 1px solid rgba(0,198,255,0.25);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--neon-blue);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    transition: transform 0.3s, background 0.3s;
+  }
+  .faq-item.open .faq-arrow { transform: rotate(45deg); background: rgba(0,198,255,0.1); }
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.35s ease;
+    padding: 0 24px;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+  .faq-item.open .faq-a {
+    max-height: 300px;
+    padding: 0 24px 20px;
+  }
+
+  /* ─── CONTACT / ORDER ─── */
+  .order-section {
+    text-align: center;
+  }
+  .order-card {
+    background: linear-gradient(135deg, #030f24, #050f1e);
+    border: 1px solid rgba(0,198,255,0.2);
+    border-radius: 24px;
+    padding: 64px 40px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(0,114,255,0.1);
+  }
+  .order-card::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%; transform: translateX(-50%);
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0,114,255,0.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .order-card h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 900;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .order-card p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 500px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+    font-weight: 300;
+    position: relative;
+  }
+  .contact-chips {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .contact-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.3s;
+    cursor: pointer;
+    border: none;
+  }
+  .chip-telegram {
+    background: rgba(41,182,246,0.1);
+    color: #29b6f6;
+    border: 1px solid rgba(41,182,246,0.3);
+  }
+  .chip-telegram:hover {
+    background: rgba(41,182,246,0.2);
+    box-shadow: 0 0 25px rgba(41,182,246,0.3);
+    transform: translateY(-2px);
+  }
+  .chip-wa {
+    background: rgba(37,211,102,0.1);
+    color: #25d366;
+    border: 1px solid rgba(37,211,102,0.3);
+  }
+  .chip-wa:hover {
+    background: rgba(37,211,102,0.2);
+    box-shadow: 0 0 25px rgba(37,211,102,0.3);
+    transform: translateY(-2px);
+  }
+  .chip-vk {
+    background: rgba(0,119,255,0.1);
+    color: #0077ff;
+    border: 1px solid rgba(0,119,255,0.3);
+  }
+  .chip-vk:hover {
+    background: rgba(0,119,255,0.2);
+    box-shadow: 0 0 25px rgba(0,119,255,0.3);
+    transform: translateY(-2px);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 48px 0 24px;
+    background: rgba(2,4,8,0.8);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  .footer-brand p {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-top: 14px;
+    max-width: 280px;
+    font-weight: 300;
+  }
+  .footer-col h4 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 10px; }
+  .footer-col ul li a {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-col ul li a:hover { color: var(--neon-blue); }
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .status-tag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--neon-green);
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-deep); }
+  ::-webkit-scrollbar-thumb { background: rgba(0,198,255,0.3); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0,198,255,0.5); }
+
+  /* ─── DIVIDER ─── */
+  .glowing-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,198,255,0.3), transparent);
+    margin: 0;
+  }
+
+  /* ─── TICKER ─── */
+  .ticker-wrap {
+    background: rgba(0,198,255,0.04);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    padding: 12px 0;
+  }
+  .ticker-inner {
+    display: flex;
+    gap: 60px;
+    animation: ticker 30s linear infinite;
+    white-space: nowrap;
+  }
+  @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  .ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .ticker-dot { color: var(--neon-blue); }
+
+  /* ─── TOOLTIPS ─── */
+  [data-tip] { position: relative; cursor: help; }
+  [data-tip]::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #080f1f;
+    border: 1px solid rgba(0,198,255,0.25);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    padding: 6px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    margin-bottom: 8px;
+    font-family: 'Exo 2', sans-serif;
+    z-index: 100;
+  }
+  [data-tip]:hover::after { opacity: 1; }
+
+  /* ─── REVEAL ANIMATION ─── */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1024px) {
+    .steps-grid { grid-template-columns: repeat(2, 1fr); }
+    .pricing-grid { grid-template-columns: repeat(1, 1fr); max-width: 480px; margin: 0 auto; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .footer-brand { grid-column: 1 / -1; }
+  }
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .burger { display: flex; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    .features-grid { grid-template-columns: 1fr; }
+    .payment-grid { grid-template-columns: 1fr; }
+    .showcase-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .hero-price-highlight { flex-direction: column; gap: 12px; padding: 20px 24px; }
+    .price-sep { width: 60px; height: 1px; }
+    section { padding: 60px 0; }
+    .order-card { padding: 40px 20px; }
+  }
+  @media (max-width: 480px) {
+    .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    .steps-grid { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; }
+  }
+</style>
 </head>
 <body>
 
-    <h1>🔥 Topzi Services 🔥</h1>
+<!-- BACKGROUND CANVAS -->
+<canvas id="bg-canvas"></canvas>
 
-    <div class="card">
-        <h2>Создание сайта</h2>
-        <p class="price">5000₸</p>
-        <a href="#" class="btn">Связаться</a>
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="logo-icon">🎮</div>
+      STEAM<span>BOOST</span>&nbsp;KZ
+    </a>
+    <ul class="nav-links">
+      <li><a href="#how">Как работает</a></li>
+      <li><a href="#pricing">Тарифы</a></li>
+      <li><a href="#protection">Защита</a></li>
+      <li><a href="#payment">Оплата</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#order" class="nav-cta">Заказать</a></li>
+    </ul>
+    <div class="burger" id="burger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
     </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#how" onclick="toggleMenu()">Как работает</a>
+  <a href="#pricing" onclick="toggleMenu()">Тарифы</a>
+  <a href="#protection" onclick="toggleMenu()">Защита</a>
+  <a href="#payment" onclick="toggleMenu()">Оплата</a>
+  <a href="#faq" onclick="toggleMenu()">FAQ</a>
+  <a href="#order" onclick="toggleMenu()">Заказать</a>
+</div>
 
-    <div class="card">
-        <h2>Дизайн аватарки</h2>
-        <p class="price">2000₸</p>
-        <a href="#" class="btn">Связаться</a>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="badge-dot"></div>
+      Сервис работает 24/7
     </div>
+    <h1 class="hero-title">
+      <div class="line1">НАКРУТКА ЧАСОВ</div>
+      <div class="line2">STEAM</div>
+    </h1>
+    <p class="hero-sub">Автоматическое накопление часов Steam без риска блокировки аккаунта. Быстро, безопасно, конфиденциально.</p>
+    <div class="hero-price-highlight">
+      <div class="price-from">
+        <div class="amount">100₸</div>
+        <div class="label">Цена</div>
+      </div>
+      <div class="price-sep"></div>
+      <div class="price-hours">
+        <div class="amount">60ч</div>
+        <div class="label">За сессию</div>
+      </div>
+      <div class="price-sep"></div>
+      <div class="price-from">
+        <div class="amount" style="color:var(--neon-purple);text-shadow:0 0 15px rgba(191,95,255,0.5)">3 тарифа</div>
+        <div class="label">На выбор</div>
+      </div>
+    </div>
+    <div class="hero-btns">
+      <a href="#pricing" class="btn-primary">⚡ Выбрать тариф</a>
+      <a href="#how" class="btn-secondary">Узнать больше →</a>
+    </div>
+  </div>
+</section>
 
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <div class="ticker-item"><span class="ticker-dot">●</span> ЗАЩИТА ОТ БАНА</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span> КОНФИДЕНЦИАЛЬНОСТЬ ДАННЫХ</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span> АВТО-ВОЗОБНОВЛЕНИЕ ФАРМА</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span> ОПЛАТА КАСПИЙ / ХАЛЫК / СБЕР</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span> ПОДДЕРЖКА 24/7</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span> АВТО ФАРМ КАРТОЧЕК</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span> ОПЛАТА СКИНАМИ</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span> ЗАЩИТА ОТ БАНА</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span> КОНФИДЕНЦИАЛЬНОСТЬ ДАННЫХ</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span> АВТО-ВОЗОБНОВЛЕНИЕ ФАРМА</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span> ОПЛАТА КАСПИЙ / ХАЛЫК / СБЕР</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span> ПОДДЕРЖКА 24/7</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span> АВТО ФАРМ КАРТОЧЕК</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span> ОПЛАТА СКИНАМИ</div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="container">
+    <div class="stats-inner reveal">
+      <div class="stat-item">
+        <div class="stat-num" data-count="1500">0</div>
+        <div class="stat-label">Довольных клиентов</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-count="98">0</div>
+        <div class="stat-label">% без банов</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-count="50000">0</div>
+        <div class="stat-label">Часов накручено</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-count="24">0</div>
+        <div class="stat-label">Часа поддержки</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <div class="section-label">// процесс</div>
+      <h2 class="section-title">Как это <span class="highlight">работает</span></h2>
+      <p class="section-desc">Весь процесс занимает не более 5 минут. Мы берём на себя всё техническое.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="step-num">01</div>
+        <div class="step-icon">📋</div>
+        <div class="step-title">Выбор тарифа</div>
+        <div class="step-desc">Выберите подходящий тариф: Базовый, Стандарт или Премиум. Каждый тариф имеет свой набор функций и защиты.</div>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">02</div>
+        <div class="step-icon">💬</div>
+        <div class="step-title">Связь с нами</div>
+        <div class="step-desc">Напишите нам в Telegram, WhatsApp или ВКонтакте. Мы ответим в течение нескольких минут и уточним детали заказа.</div>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">03</div>
+        <div class="step-icon">💳</div>
+        <div class="step-title">Оплата</div>
+        <div class="step-desc">Оплатите удобным способом: картой Kaspi, Halyk, Сбер, Тинькофф, СБП, скинами Steam или наличными при встрече.</div>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">04</div>
+        <div class="step-icon">🚀</div>
+        <div class="step-title">Запуск фарма</div>
+        <div class="step-desc">Мы запускаем автоматический фарм часов. Всё работает в фоне — система сама остановится если вы зайдёте в игру и возобновится через 45 минут.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="glowing-divider"></div>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <div class="section-label">// тарифы</div>
+      <h2 class="section-title">Выберите <span class="highlight">тариф</span></h2>
+      <p class="section-desc">Три уровня сервиса для разных потребностей. Все тарифы включают базовую защиту от блокировки.</p>
+    </div>
+    <div class="pricing-grid reveal">
+
+      <!-- BASIC -->
+      <div class="plan-card">
+        <div class="plan-tier">Tier 01</div>
+        <div class="plan-name">Базовый</div>
+        <div class="plan-price-block">
+          <div class="plan-price">от <strong>100₸</strong> / 60 часов</div>
+          <div class="plan-price-2">до 500₸ — базовый тариф</div>
+        </div>
+        <!-- IMAGE PLACEHOLDER -->
+        <div class="img-placeholder img-placeholder-sm" style="margin-bottom:20px;">
+          <div class="ph-icon">🎮</div>
+          <div>Скриншот интерфейса</div>
+        </div>
+        <ul class="plan-features">
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>Простая накрутка часов Steam — быстрый старт без лишних настроек</div>
+          </li>
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>Авто-возобновление: если войдёте в игру — фарм остановится, через 45 мин после выхода — продолжится автоматически</div>
+          </li>
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>Базовая защита от АФК-кика и обнаружения ботов</div>
+          </li>
+          <li>
+            <div class="feat-icon meh">◈</div>
+            <div>1 статус в Steam (онлайн / в игре)</div>
+          </li>
+          <li>
+            <div class="feat-icon no">✕</div>
+            <div>Скрытие игровой активности от друзей</div>
+          </li>
+          <li>
+            <div class="feat-icon no">✕</div>
+            <div>Авто-ответ на сообщения</div>
+          </li>
+          <li>
+            <div class="feat-icon no">✕</div>
+            <div>Авто-принятие в друзья</div>
+          </li>
+          <li>
+            <div class="feat-icon no">✕</div>
+            <div>Фарм карточек Steam</div>
+          </li>
+        </ul>
+        <a href="#order" class="plan-btn basic">Выбрать базовый</a>
+      </div>
+
+      <!-- STANDARD -->
+      <div class="plan-card featured">
+        <div class="plan-badge">Популярный</div>
+        <div class="plan-tier">Tier 02</div>
+        <div class="plan-name featured-name">Стандарт</div>
+        <div class="plan-price-block">
+          <div class="plan-price">от <strong>500₸</strong> / 60 часов</div>
+          <div class="plan-price-2">от 500₸ до 1000₸ — расширенный</div>
+        </div>
+        <!-- IMAGE PLACEHOLDER -->
+        <div class="img-placeholder img-placeholder-sm" style="margin-bottom:20px;border-color:rgba(0,198,255,0.3);">
+          <div class="ph-icon">⚙️</div>
+          <div>Скриншот панели настроек</div>
+        </div>
+        <ul class="plan-features">
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>Всё из Базового тарифа — включено полностью</div>
+          </li>
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>Улучшенная защита от АФК-бота и систем обнаружения</div>
+          </li>
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>Несколько статусов — настраивай название, игру, состояние по своему</div>
+          </li>
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>Скрытие активности: друзья не увидят, что ты играешь</div>
+          </li>
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>Авто-ответ на входящие сообщения — задай шаблон ответа</div>
+          </li>
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>Авто-принятие заявок в друзья с фильтрацией</div>
+          </li>
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>Приоритетная поддержка в течение 1 часа</div>
+          </li>
+          <li>
+            <div class="feat-icon no">✕</div>
+            <div>Авто-фарм торговых карточек Steam</div>
+          </li>
+        </ul>
+        <a href="#order" class="plan-btn standard">Выбрать стандарт</a>
+      </div>
+
+      <!-- PREMIUM -->
+      <div class="plan-card premium">
+        <div class="plan-badge premium-badge">Максимум</div>
+        <div class="plan-tier">Tier 03</div>
+        <div class="plan-name premium-name">Премиум</div>
+        <div class="plan-price-block">
+          <div class="plan-price">от <strong style="color:var(--neon-purple);text-shadow:0 0 15px rgba(191,95,255,0.5)">1000₸</strong> / месяц</div>
+          <div class="plan-price-2">от 1000₸ — полный арсенал функций</div>
+        </div>
+        <!-- IMAGE PLACEHOLDER -->
+        <div class="img-placeholder img-placeholder-sm" style="margin-bottom:20px;border-color:rgba(191,95,255,0.3);">
+          <div class="ph-icon">👑</div>
+          <div>Скриншот премиум-панели</div>
+        </div>
+        <ul class="plan-features">
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>Всё из тарифа Стандарт — без ограничений</div>
+          </li>
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>🃏 Авто-фарм торговых карточек Steam — зарабатывай реальные деньги пока спишь</div>
+          </li>
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>Умный алгоритм фарма: обходит ограничения Valve, имитирует поведение живого игрока</div>
+          </li>
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>Авто-продажа карточек на Steam Market по настраиваемой цене</div>
+          </li>
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>Авто-ответ с ИИ-шаблонами — умные ответы для любой ситуации</div>
+          </li>
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>Детальная статистика: часы, карточки, заработок — всё в одном дашборде</div>
+          </li>
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>VIP-поддержка 24/7, личный менеджер, решение вопросов в течение 15 минут</div>
+          </li>
+          <li>
+            <div class="feat-icon yes">✓</div>
+            <div>Максимальная анонимность: многоуровневая маскировка активности</div>
+          </li>
+        </ul>
+        <a href="#order" class="plan-btn premium-btn">Выбрать премиум</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="glowing-divider"></div>
+
+<!-- PROTECTION SHOWCASE -->
+<section id="protection">
+  <div class="container">
+    <div class="showcase-grid">
+      <div class="showcase-content reveal">
+        <div class="section-label">// безопасность</div>
+        <h2 class="section-title">Защита и <span class="highlight">конфиденциальность</span></h2>
+        <p class="section-desc">Мы используем передовые методы защиты, чтобы ваш аккаунт оставался в безопасности. Ни один из наших клиентов не был забанен.</p>
+        <ul class="showcase-list">
+          <li>
+            <div class="check">✓</div>
+            <div class="li-text">
+              <strong>Защита от АФК-кика</strong>
+              <span>Система имитирует активность игрока — случайные паузы, движения, события</span>
+            </div>
+          </li>
+          <li>
+            <div class="check">✓</div>
+            <div class="li-text">
+              <strong>Конфиденциальность данных</strong>
+              <span>Данные вашего аккаунта шифруются и не передаются третьим лицам</span>
+            </div>
+          </li>
+          <li>
+            <div class="check">✓</div>
+            <div class="li-text">
+              <strong>Умная пауза</strong>
+              <span>Фарм мгновенно останавливается при входе в игру и возобновляется через 45 мин после выхода</span>
+            </div>
+          </li>
+          <li>
+            <div class="check">✓</div>
+            <div class="li-text">
+              <strong>Маскировка активности</strong>
+              <span>Опционально скрываем игровую активность от друзей и публичного профиля</span>
+            </div>
+          </li>
+          <li>
+            <div class="check">✓</div>
+            <div class="li-text">
+              <strong>Нет доступа к инвентарю</strong>
+              <span>Нам не нужен пароль от аккаунта — используем безопасный метод подключения</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="reveal">
+        <!-- TERMINAL -->
+        <div class="terminal">
+          <div class="terminal-header">
+            <div class="t-btn red"></div>
+            <div class="t-btn yellow"></div>
+            <div class="t-btn green"></div>
+            <div class="t-title">steamboost_kz — status monitor</div>
+          </div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd"> status --account user12345</span></div>
+            <div class="t-line t-out success">✔ Соединение установлено</div>
+            <div class="t-line t-out success">✔ Аккаунт защищён</div>
+            <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd"> boost --mode auto --hours 60</span></div>
+            <div class="t-line t-out">⟳ Запуск фарма часов...</div>
+            <div class="t-line t-out success">✔ Фарм запущен: 3 игры активны</div>
+            <div class="t-line t-out">⟳ Текущие часы: 17.4 → +60.0</div>
+            <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd"> check --ban-risk</span></div>
+            <div class="t-line t-out success">✔ Риск бана: МИНИМАЛЬНЫЙ</div>
+            <div class="t-line t-out success">✔ Маскировка активна</div>
+            <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd"> monitor --afk</span></div>
+            <div class="t-line t-out warning">⚠ Обнаружена активность игрока</div>
+            <div class="t-line t-out">⟳ Фарм приостановлен на 45 мин</div>
+            <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd"><span class="t-cursor"></span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="glowing-divider"></div>
+
+<!-- FEATURES -->
+<section>
+  <div class="container">
+    <div class="section-header centered reveal">
+      <div class="section-label">// возможности</div>
+      <h2 class="section-title">Все <span class="highlight">функции</span></h2>
+      <p class="section-desc">Полный набор инструментов для прокачки Steam-аккаунта без лишних усилий.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card reveal">
+        <div class="feat-card-icon">⏱️</div>
+        <div class="feat-card-title">Авто-накрутка часов</div>
+        <div class="feat-card-desc">Автоматический фарм часов в любых играх Steam. Система работает 24/7 в фоновом режиме без вашего участия.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-card-icon">🔄</div>
+        <div class="feat-card-title">Умное возобновление</div>
+        <div class="feat-card-desc">Фарм автоматически останавливается когда вы заходите в игру и возобновляется через 45 минут после выхода — никаких конфликтов.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-card-icon">🎭</div>
+        <div class="feat-card-title">Настройка статусов</div>
+        <div class="feat-card-desc">Гибкая настройка статусов Steam: название игры, состояние онлайн/офлайн, скрытие активности от друзей. Недоступно в базовом тарифе.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-card-icon">💬</div>
+        <div class="feat-card-title">Авто-ответ</div>
+        <div class="feat-card-desc">Автоматические ответы на входящие сообщения в Steam. Настраивайте шаблоны и триггерные слова по своему усмотрению.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-card-icon">👥</div>
+        <div class="feat-card-title">Авто-принятие друзей</div>
+        <div class="feat-card-desc">Автоматическое принятие или отклонение заявок в друзья по заданным критериям. Уровень аккаунта, количество игр и другое.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-card-icon">🃏</div>
+        <div class="feat-card-title">Фарм карточек (Premium)</div>
+        <div class="feat-card-desc">Автоматический сбор торговых карточек Steam из игр. Продажа на маркете по настроенной цене — пассивный доход на аккаунте.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-card-icon">🛡️</div>
+        <div class="feat-card-title">Многоуровневая защита</div>
+        <div class="feat-card-desc">Комплексная защита: имитация живого игрока, случайные интервалы активности, маскировка от систем обнаружения Valve.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-card-icon">🔒</div>
+        <div class="feat-card-title">Конфиденциальность</div>
+        <div class="feat-card-desc">Ваши данные не хранятся на наших серверах дольше, чем необходимо. Используем безопасный протокол подключения без пароля.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-card-icon">📊</div>
+        <div class="feat-card-title">Статистика фарма</div>
+        <div class="feat-card-desc">Детальные отчёты: сколько часов накручено, какие игры активны, заработок с карточек. Всё в удобном формате в переписке.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="glowing-divider"></div>
+
+<!-- PAYMENT -->
+<section id="payment" class="payment-section">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">// оплата</div>
+      <h2 class="section-title">Удобные способы <span class="highlight">оплаты</span></h2>
+      <p class="section-desc">Принимаем любые способы оплаты — от казахстанских банков до международных карт и скинов Steam.</p>
+    </div>
+    <div class="payment-grid">
+
+      <div class="payment-category reveal">
+        <div class="pay-cat-title">
+          <span class="pay-cat-icon">🇰🇿</span> Казахстан
+        </div>
+        <div class="payment-methods">
+          <div class="pay-method"><span class="pay-method-emoji">💳</span> Kaspi Bank</div>
+          <div class="pay-method"><span class="pay-method-emoji">💳</span> Halyk Bank</div>
+          <div class="pay-method"><span class="pay-method-emoji">💳</span> Kaspi QR</div>
+          <div class="pay-method"><span class="pay-method-emoji">📱</span> Halyk Pay</div>
+          <div class="pay-method"><span class="pay-method-emoji">💵</span> Наличные (встреча)</div>
+          <div class="pay-method"><span class="pay-method-emoji">🏦</span> Другие KZ банки</div>
+        </div>
+      </div>
+
+      <div class="payment-category reveal">
+        <div class="pay-cat-title">
+          <span class="pay-cat-icon">🇷🇺</span> Россия
+        </div>
+        <div class="payment-methods">
+          <div class="pay-method"><span class="pay-method-emoji">💳</span> Сбербанк</div>
+          <div class="pay-method"><span class="pay-method-emoji">💳</span> Тинькофф</div>
+          <div class="pay-method"><span class="pay-method-emoji">⚡</span> СБП (быстрый платёж)</div>
+          <div class="pay-method"><span class="pay-method-emoji">📱</span> Тинькофф QR</div>
+          <div class="pay-method"><span class="pay-method-emoji">🏦</span> Другие RU банки</div>
+        </div>
+      </div>
+
+      <div class="payment-category reveal">
+        <div class="pay-cat-title">
+          <span class="pay-cat-icon">🌍</span> Зарубежные банки
+        </div>
+        <div class="payment-methods">
+          <div class="pay-method"><span class="pay-method-emoji">💳</span> Visa / Mastercard</div>
+          <div class="pay-method"><span class="pay-method-emoji">💳</span> Международный перевод</div>
+          <div class="pay-method"><span class="pay-method-emoji">💰</span> USDT (Tether)</div>
+          <div class="pay-method"><span class="pay-method-emoji">₿</span> Crypto (по запросу)</div>
+        </div>
+      </div>
+
+      <div class="payment-category reveal">
+        <div class="pay-cat-title">
+          <span class="pay-cat-icon">🎮</span> Steam способы
+        </div>
+        <div class="payment-methods">
+          <div class="pay-method" data-tip="Принимаем скины CS2, Dota 2, TF2"><span class="pay-method-emoji">🗡️</span> Скины CS2</div>
+          <div class="pay-method" data-tip="Скины Dota 2 и другие предметы"><span class="pay-method-emoji">⚔️</span> Скины Dota 2</div>
+          <div class="pay-method" data-tip="Торговые карточки Steam"><span class="pay-method-emoji">🃏</span> Торговые карточки</div>
+          <div class="pay-method" data-tip="Предметы из других игр Steam"><span class="pay-method-emoji">🎁</span> Другие предметы</div>
+          <div class="pay-method" data-tip="Steam-кошелёк через P2P"><span class="pay-method-emoji">💚</span> Баланс Steam (P2P)</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="glowing-divider"></div>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <div class="section-label">// вопросы и ответы</div>
+      <h2 class="section-title">Часто задаваемые <span class="highlight">вопросы</span></h2>
+      <p class="section-desc">Ответы на самые популярные вопросы о нашем сервисе.</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Безопасно ли это для моего аккаунта Steam?
+          <div class="faq-arrow">+</div>
+        </div>
+        <div class="faq-a">
+          Да. Мы используем специальные методы работы с Steam API, которые имитируют поведение обычного игрока. Ни один из наших клиентов не получил блокировку. Тем не менее, рекомендуем выбирать тариф Стандарт или Премиум для максимальной защиты.
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Мне нужно передавать пароль от аккаунта?
+          <div class="faq-arrow">+</div>
+        </div>
+        <div class="faq-a">
+          Нет! Это принципиально важный момент. Мы работаем через безопасный метод подключения, который не требует вашего основного пароля. Ваши личные данные в полной безопасности. Схему подключения мы объясняем при заказе.
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Как работает авто-пауза при входе в игру?
+          <div class="faq-arrow">+</div>
+        </div>
+        <div class="faq-a">
+          Наша система постоянно мониторит состояние вашего аккаунта. Как только вы запускаете любую игру в Steam, фарм мгновенно останавливается, чтобы избежать конфликта. После того как вы закроете игру, система ждёт 45 минут (для имитации естественного поведения) и автоматически возобновляет фарм.
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Сколько времени занимает накрутка 60 часов?
+          <div class="faq-arrow">+</div>
+        </div>
+        <div class="faq-a">
+          Фарм ведётся в реальном времени — 60 часов накручиваются примерно за 2–3 суток при непрерывной работе. Если вы периодически заходите в игры сами, время немного увеличивается. Мы всегда информируем о прогрессе.
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Как оплатить скинами? Это выгодно?
+          <div class="faq-arrow">+</div>
+        </div>
+        <div class="faq-a">
+          Мы принимаем скины CS2, Dota 2, TF2 и других игр Steam по рыночной цене (Steam Market). Это удобно — не нужно выводить деньги. Просто напишите нам, скажите, какие скины есть, мы оценим и договоримся. Минимальная стоимость скинов для оплаты — эквивалент стоимости выбранного тарифа.
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Что такое фарм карточек Steam (Премиум тариф)?
+          <div class="faq-arrow">+</div>
+        </div>
+        <div class="faq-a">
+          У многих игр Steam есть торговые карточки, которые выдаются при прохождении/наигрывании определённого количества часов. Эти карточки можно продать на Steam Market. В Премиум тарифе мы автоматически фармим эти карточки и при желании выставляем их на продажу — это создаёт небольшой пассивный доход на вашем аккаунте.
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Можно ли оплатить наличными при встрече?
+          <div class="faq-arrow">+</div>
+        </div>
+        <div class="faq-a">
+          Да! Мы работаем в Казахстане и можем организовать встречу для оплаты наличными. Уточните при заказе ваш город — свяжемся и договоримся о месте и времени. Обычно встречи проходят в публичных местах (кафе, торговые центры).
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Есть ли гарантия? Что если что-то пойдёт не так?
+          <div class="faq-arrow">+</div>
+        </div>
+        <div class="faq-a">
+          Да, мы даём гарантию на выполненные часы. Если по нашей вине фарм был прерван или не выполнен в полном объёме — мы дофармим недостающее бесплатно или вернём деньги. За все годы работы серьёзных инцидентов не было.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="glowing-divider"></div>
+
+<!-- ORDER / CONTACT -->
+<section id="order" class="order-section">
+  <div class="container">
+    <div class="order-card reveal">
+      <h2 class="section-title">Готов начать? <span class="highlight">Пиши нам!</span></h2>
+      <p>Выбери удобный мессенджер, напиши нам и мы запустим твой фарм уже сегодня. Отвечаем быстро, работаем честно.</p>
+      <div class="contact-chips">
+        <a href="#" class="contact-chip chip-telegram">
+          ✈️ Telegram
+        </a>
+        <a href="#" class="contact-chip chip-wa">
+          📱 WhatsApp
+        </a>
+        <a href="#" class="contact-chip chip-vk">
+          💬 ВКонтакте
+        </a>
+      </div>
+      <div style="margin-top:32px;opacity:0.5;font-size:0.8rem;font-family:'JetBrains Mono',monospace;color:var(--text-dim);">
+        Среднее время ответа: &lt; 15 минут
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo" style="text-decoration:none;display:inline-flex;">
+          <div class="logo-icon">🎮</div>
+          STEAM<span>BOOST</span>&nbsp;KZ
+        </a>
+        <p>Профессиональный сервис накрутки часов Steam в Казахстане. Работаем честно, быстро и безопасно с 2022 года. Более 1500 довольных клиентов.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Навигация</h4>
+        <ul>
+          <li><a href="#how">Как работает</a></li>
+          <li><a href="#pricing">Тарифы</a></li>
+          <li><a href="#protection">Защита</a></li>
+          <li><a href="#payment">Оплата</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Тарифы</h4>
+        <ul>
+          <li><a href="#pricing">Базовый (до 500₸)</a></li>
+          <li><a href="#pricing">Стандарт (500–1000₸)</a></li>
+          <li><a href="#pricing">Премиум (от 1000₸)</a></li>
+          <li><a href="#order">Заказать сейчас</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2024 SteamBoost KZ. Не аффилированы с Valve Corporation.</div>
+      <div class="status-tag">
+        <div class="badge-dot"></div>
+        Все системы работают
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ─── CANVAS PARTICLES ───
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.r = Math.random() * 1.5 + 0.3;
+      this.vx = (Math.random() - 0.5) * 0.3;
+      this.vy = (Math.random() - 0.5) * 0.3;
+      this.alpha = Math.random() * 0.4 + 0.1;
+      this.color = Math.random() > 0.7 ? '#39ff14' : '#00c6ff';
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+    }
+  }
+
+  for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+  // Lines between close particles
+  function drawConnections() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i+1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 100) {
+          ctx.save();
+          ctx.globalAlpha = (1 - dist/100) * 0.06;
+          ctx.strokeStyle = '#00c6ff';
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    drawConnections();
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  // ─── SCROLL REVEAL ───
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        // Stagger children
+        const children = e.target.querySelectorAll('.plan-card, .feat-card, .step-card, .payment-category');
+        children.forEach((c, i) => {
+          setTimeout(() => c.style.opacity = '1', i * 100);
+        });
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(r => observer.observe(r));
+
+  // ─── COUNTER ANIMATION ───
+  function animateCount(el, target) {
+    let current = 0;
+    const duration = 2000;
+    const step = target / (duration / 16);
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) { current = target; clearInterval(timer); }
+      el.textContent = Math.floor(current).toLocaleString('ru-RU');
+    }, 16);
+  }
+  const counterObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const el = e.target.querySelector('[data-count]');
+        if (el && !el.dataset.counted) {
+          el.dataset.counted = true;
+          animateCount(el, parseInt(el.dataset.count));
+        }
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.stat-item').forEach(s => counterObs.observe(s));
+
+  // ─── FAQ TOGGLE ───
+  function toggleFaq(header) {
+    const item = header.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // ─── MOBILE MENU ───
+  function toggleMenu() {
+    document.getElementById('mobile-menu').classList.toggle('open');
+  }
+
+  // ─── SMOOTH SCROLL NAV ACTIVE ───
+  const sections = document.querySelectorAll('section[id]');
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY + 100;
+    sections.forEach(s => {
+      const top = s.offsetTop;
+      const h = s.offsetHeight;
+      const id = s.id;
+      const link = document.querySelector(`.nav-links a[href="#${id}"]`);
+      if (link) {
+        if (y >= top && y < top + h) link.style.color = 'var(--neon-blue)';
+        else link.style.color = '';
+      }
+    });
+  });
+
+  // ─── TYPING EFFECT FOR TERMINAL ───
+  (function typeTerminal() {
+    const lines = document.querySelectorAll('.terminal-body .t-line');
+    lines.forEach((line, i) => {
+      line.style.opacity = '0';
+      setTimeout(() => {
+        line.style.opacity = '1';
+        line.style.transition = 'opacity 0.2s';
+      }, i * 250);
+    });
+  })();
+</script>
 </body>
 </html>
